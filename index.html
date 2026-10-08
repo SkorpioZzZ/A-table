@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icons/app-icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./icons/app-icon-192.png" />
+    <title>À table — Une idée de repas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="src/styles/main.css" />
+    <link rel="stylesheet" href="src/styles/recipe-list.css" />
+    <script type="module" src="src/app.js"></script>
+  </head>
+  <body>
+    <main class="page" id="accueil">
+      <header class="header"><a class="brand" href="#accueil">à table<span>.</span></a></header>
+      <section class="intro"><h1>On mange quoi ?</h1><p>Choisissez une idée, puis découvrez la recette.</p></section>
+      <section class="filters" aria-label="Filtres de recettes">
+        <label class="filter-control"><span>Préparation</span><select id="time-filter"><option value="60">Peu importe</option><option value="20">20 min max</option><option value="30">30 min max</option><option value="45">45 min max</option></select></label>
+        <label class="filter-control"><span>Type de plat</span><select id="type-filter"><option value="all">Peu importe</option><option value="Végétarien">Végétarien</option><option value="Viande">Viande</option><option value="Poisson">Poisson</option></select></label>
+        <label class="filter-control"><span>Quel repas ?</span><select id="meal-filter"><option value="all">Peu importe</option><option value="dejeuner">Déjeuner</option><option value="diner">Dîner</option></select></label>
+      </section>
+      <details class="recipe-manager" id="recipe-manager">
+        <summary>Mes recettes <span id="recipe-count"></span></summary>
+        <div class="recipe-manager-content">
+          <p>Ajoutez vos idées ou adaptez les recettes à vos habitudes.</p>
+          <button class="add-recipe-button" id="add-recipe-button" type="button">＋ Ajouter une recette</button>
+          <ul class="manage-recipe-list" id="manage-recipe-list"></ul>
+        </div>
+      </details>
+      <section class="wheel-section" aria-label="Roue des repas">
+        <div class="wheel-wrap"><div class="wheel-pointer" aria-hidden="true"></div><canvas id="meal-wheel" width="600" height="600" aria-label="Roue de recettes"></canvas></div>
+        <p class="wheel-hint" id="wheel-hint">La roue choisira parmi les recettes qui correspondent à tes critères.</p>
+        <button class="spin-button" id="spin-button">Choisir un repas</button>
+        <section class="wheel-recipes" aria-live="polite"><h2>Recettes dans la roue</h2><ul id="wheel-recipes-list"></ul></section>
+      </section>
+    </main>
+    <dialog class="recipe-dialog" id="recipe-dialog" aria-labelledby="dialog-title"><form method="dialog"><button class="dialog-close" aria-label="Fermer la recette">×</button></form><div class="dialog-emoji" id="dialog-emoji">🍝</div><p class="eyebrow">VOTRE IDÉE DE REPAS</p><h2 id="dialog-title"></h2><p class="dialog-meta" id="dialog-meta"></p><p class="dialog-description" id="dialog-description"></p><h3>Ingrédients</h3><ul id="dialog-ingredients"></ul><h3>Préparation</h3><ol id="dialog-steps"></ol></dialog>
+    <dialog class="edit-dialog" id="edit-dialog" aria-labelledby="edit-dialog-title">
+      <form id="recipe-form">
+        <button class="dialog-close" id="edit-dialog-close" type="button" aria-label="Fermer le formulaire">×</button>
+        <p class="eyebrow">MES RECETTES</p>
+        <h2 id="edit-dialog-title">Ajouter une recette</h2>
+        <label>Nom de la recette<input name="title" required maxlength="70" placeholder="Ex. Gratin de légumes" /></label>
+        <label>Petite description<input name="description" required maxlength="140" placeholder="Ex. Un plat facile pour le soir" /></label>
+        <div class="form-row">
+          <label>Type<select name="type"><option>Végétarien</option><option>Viande</option><option>Poisson</option></select></label>
+          <label>Repas<select name="meal"><option value="dejeuner">Déjeuner</option><option value="diner">Dîner</option></select></label>
+        </div>
+        <label>Temps de préparation (minutes)<input name="time" type="number" min="1" max="240" value="20" required /></label>
+        <label>Ingrédients <span class="form-help">Un ingrédient par ligne</span><textarea name="ingredients" rows="4" required placeholder="2 courgettes&#10;1 oignon"></textarea></label>
+        <label>Étapes <span class="form-help">Une étape par ligne</span><textarea name="steps" rows="5" required placeholder="Coupez les légumes.&#10;Faites-les cuire à la poêle."></textarea></label>
+        <div class="form-actions"><button type="button" class="cancel-button" id="cancel-recipe">Annuler</button><button type="submit" class="save-recipe-button">Enregistrer</button></div>
+      </form>
+    </dialog>
+  </body>
+</html>
