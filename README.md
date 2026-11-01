@@ -27,7 +27,7 @@ Ouvrez ensuite <http://localhost:8000> dans un navigateur.
 
 ## Installer sur un téléphone
 
-Le projet contient un manifeste d’application, une icône et un service worker pour l’installation et le cache hors ligne https://skorpiozzz.github.io/A-table/ : il faudra d’abord l’héberger sur un site accessible en HTTPS. Le chemin `file://` vers un fichier de l’ordinateur ne peut pas servir de lien d’installation.
+Le projet contient un manifeste d’application, une icône et un service worker pour l’installation et le cache hors ligne **https://skorpiozzz.github.io/A-table/** : il faudra d’abord l’héberger sur un site accessible en HTTPS. Le chemin `file://` vers un fichier de l’ordinateur ne peut pas servir de lien d’installation.
 
 Une fois le site hébergé :
 
