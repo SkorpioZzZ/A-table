@@ -1,6 +1,7 @@
 import { recipes } from "./data/recipes.js";
 import { getSuggestions } from "./services/recipeService.js";
 import { loadRecipes, saveRecipes } from "./services/recipeStorageService.js";
+import { exportRecipes, readRecipesFile } from "./services/backupService.js";
 
 if ("serviceWorker" in navigator && window.isSecureContext) {
   navigator.serviceWorker.register("./service-worker.js").catch(() => {});
@@ -240,6 +241,24 @@ recipeForm.addEventListener("submit", (event) => {
   drawManageList();
   drawWheel();
   editDialog.close();
+});
+const importInput = document.querySelector("#import-recipes-input");
+document.querySelector("#export-recipes-button").addEventListener("click", () => exportRecipes(allRecipes));
+document.querySelector("#import-recipes-button").addEventListener("click", () => importInput.click());
+importInput.addEventListener("change", async () => {
+  const file = importInput.files[0];
+  importInput.value = "";
+  if (!file) return;
+  const imported = await readRecipesFile(file);
+  if (!imported) {
+    window.alert("Fichier invalide : il faut une liste de recettes avec id, title, ingredients et steps. Rien n’a été modifié.");
+    return;
+  }
+  if (!window.confirm(`Remplacer vos ${allRecipes.length} recettes par les ${imported.length} recettes du fichier ?`)) return;
+  allRecipes = imported;
+  if (!saveRecipes(allRecipes)) window.alert("Impossible d’enregistrer les recettes dans ce navigateur.");
+  drawManageList();
+  drawWheel();
 });
 drawManageList();
 drawWheel();

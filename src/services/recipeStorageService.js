@@ -12,5 +12,11 @@ export function loadRecipes(defaultRecipes) {
 }
 
 export function saveRecipes(recipes) {
-  localStorage.setItem(RECIPES_KEY, JSON.stringify(recipes));
+  try {
+    localStorage.setItem(RECIPES_KEY, JSON.stringify(recipes));
+    return true;
+  } catch (error) {
+    console.error("Impossible d’enregistrer les recettes :", error);
+    return false;
+  }
 }

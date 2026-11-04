@@ -1,4 +1,4 @@
-const CACHE_NAME = "a-table-v2";
+const CACHE_NAME = "a-table-v3";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -9,6 +9,7 @@ const APP_SHELL = [
   "./src/app.js",
   "./src/data/recipes.js",
   "./src/services/recipeService.js",
+  "./src/services/backupService.js",
   "./src/services/recipeStorageService.js",
   "./src/styles/main.css",
   "./src/styles/recipe-list.css",
