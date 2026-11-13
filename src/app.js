@@ -1,6 +1,7 @@
 import { recipes } from "./data/recipes.js";
 import { getSuggestions } from "./services/recipeService.js";
 import { loadRecipes, saveRecipes } from "./services/recipeStorageService.js";
+import { exportRecipes, readRecipesFile } from "./services/backupService.js";
 
 if ("serviceWorker" in navigator && window.isSecureContext) {
   navigator.serviceWorker.register("./service-worker.js").catch(() => {});
@@ -9,6 +10,7 @@ if ("serviceWorker" in navigator && window.isSecureContext) {
 const meal = document.querySelector("#meal-filter");
 const time = document.querySelector("#time-filter");
 const type = document.querySelector("#type-filter");
+const course = document.querySelector("#course-filter");
 const wheel = document.querySelector("#meal-wheel");
 const context = wheel.getContext("2d");
 const spinButton = document.querySelector("#spin-button");
@@ -30,7 +32,7 @@ let editingRecipeId = null;
 const colors = ["#d9e4d5", "#f1e5ce", "#e8d8d1", "#e5e8d9", "#dce5e9", "#f0dfd0", "#e8e2d1", "#d8e4dd"];
 
 function drawWheel() {
-  candidates = getSuggestions(allRecipes.filter((recipe) => recipe.enabledInWheel !== false), { meal: meal.value, time: time.value, type: type.value });
+  candidates = getSuggestions(allRecipes.filter((recipe) => recipe.enabledInWheel !== false), { meal: meal.value, time: time.value, type: type.value, course: course.value });
   recipesList.replaceChildren(...candidates.map((recipe, index) => {
     const item = document.createElement("li");
     const marker = document.createElement("span");
@@ -135,6 +137,7 @@ function openEditForm(recipe = null) {
   recipeForm.reset();
   recipeForm.elements.title.value = recipe?.title ?? "";
   recipeForm.elements.description.value = recipe?.description ?? "";
+  recipeForm.elements.course.value = recipe?.course ?? "plat";
   recipeForm.elements.type.value = recipe?.type ?? "Végétarien";
   recipeForm.elements.meal.value = recipe?.meal ?? "dejeuner";
   recipeForm.elements.time.value = recipe?.time ?? 20;
@@ -162,7 +165,7 @@ function spin() {
   const delta = ((-90 - centerDegrees - currentOffset) % 360 + 360) % 360;
   wheelRotation += 360 * 5 + delta;
   spinButton.disabled = true;
-  [meal, time, type].forEach((filter) => { filter.disabled = true; });
+  [meal, time, type, course].forEach((filter) => { filter.disabled = true; });
   hint.textContent = "La roue tourne…";
   wheel.style.transform = `rotate(${wheelRotation}deg)`;
   clearTimeout(spinFallback);
@@ -175,7 +178,7 @@ function finishSpin() {
   openRecipe();
   hint.textContent = "Bon appétit !";
   spinButton.disabled = false;
-  [meal, time, type].forEach((filter) => { filter.disabled = false; });
+  [meal, time, type, course].forEach((filter) => { filter.disabled = false; });
   clearTimeout(spinFallback);
 }
 
@@ -205,7 +208,7 @@ function openRecipe() {
   dialog.showModal();
 }
 
-[meal, time, type].forEach((filter) => filter.addEventListener("change", drawWheel));
+[meal, time, type, course].forEach((filter) => filter.addEventListener("change", drawWheel));
 wheel.style.transform = `rotate(${wheelRotation}deg)`;
 spinButton.addEventListener("click", spin);
 document.querySelector("#add-recipe-button").addEventListener("click", () => openEditForm());
@@ -228,6 +231,7 @@ recipeForm.addEventListener("submit", (event) => {
     time: Number(form.get("time")),
     difficulty: "Facile",
     type: form.get("type"),
+    course: form.get("course"),
     meal: form.get("meal"),
     ingredients,
     preview: ingredients.slice(0, 4).join(", "),
@@ -240,6 +244,24 @@ recipeForm.addEventListener("submit", (event) => {
   drawManageList();
   drawWheel();
   editDialog.close();
+});
+const importInput = document.querySelector("#import-recipes-input");
+document.querySelector("#export-recipes-button").addEventListener("click", () => exportRecipes(allRecipes));
+document.querySelector("#import-recipes-button").addEventListener("click", () => importInput.click());
+importInput.addEventListener("change", async () => {
+  const file = importInput.files[0];
+  importInput.value = "";
+  if (!file) return;
+  const imported = await readRecipesFile(file);
+  if (!imported) {
+    window.alert("Fichier invalide : il faut une liste de recettes avec id, title, ingredients et steps. Rien n’a été modifié.");
+    return;
+  }
+  if (!window.confirm(`Remplacer vos ${allRecipes.length} recettes par les ${imported.length} recettes du fichier ?`)) return;
+  allRecipes = imported;
+  if (!saveRecipes(allRecipes)) window.alert("Impossible d’enregistrer les recettes dans ce navigateur.");
+  drawManageList();
+  drawWheel();
 });
 drawManageList();
 drawWheel();

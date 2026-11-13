@@ -24,6 +24,7 @@
       <section class="intro"><h1>On mange quoi ?</h1><p>Choisissez une idée, puis découvrez la recette.</p></section>
       <section class="filters" aria-label="Filtres de recettes">
         <label class="filter-control"><span>Préparation</span><select id="time-filter"><option value="60">Peu importe</option><option value="20">20 min max</option><option value="30">30 min max</option><option value="45">45 min max</option></select></label>
+        <label class="filter-control"><span>Entrée, plat ou dessert</span><select id="course-filter"><option value="all">Peu importe</option><option value="entree">Entrée</option><option value="plat">Plat</option><option value="dessert">Dessert</option></select></label>
         <label class="filter-control"><span>Type de plat</span><select id="type-filter"><option value="all">Peu importe</option><option value="Végétarien">Végétarien</option><option value="Viande">Viande</option><option value="Poisson">Poisson</option></select></label>
         <label class="filter-control"><span>Quel repas ?</span><select id="meal-filter"><option value="all">Peu importe</option><option value="dejeuner">Déjeuner</option><option value="diner">Dîner</option></select></label>
       </section>
@@ -32,6 +33,9 @@
         <div class="recipe-manager-content">
           <p>Ajoutez vos idées ou adaptez les recettes à vos habitudes.</p>
           <button class="add-recipe-button" id="add-recipe-button" type="button">＋ Ajouter une recette</button>
+          <button class="cancel-button" id="export-recipes-button" type="button">Exporter mes recettes</button>
+          <button class="cancel-button" id="import-recipes-button" type="button">Importer des recettes</button>
+          <input id="import-recipes-input" type="file" accept=".json,application/json" hidden />
           <ul class="manage-recipe-list" id="manage-recipe-list"></ul>
         </div>
       </details>
@@ -51,6 +55,7 @@
         <label>Nom de la recette<input name="title" required maxlength="70" placeholder="Ex. Gratin de légumes" /></label>
         <label>Petite description<input name="description" required maxlength="140" placeholder="Ex. Un plat facile pour le soir" /></label>
         <div class="form-row">
+          <label>Catégorie<select name="course"><option value="entree">Entrée</option><option value="plat">Plat</option><option value="dessert">Dessert</option></select></label>
           <label>Type<select name="type"><option>Végétarien</option><option>Viande</option><option>Poisson</option></select></label>
           <label>Repas<select name="meal"><option value="dejeuner">Déjeuner</option><option value="diner">Dîner</option></select></label>
         </div>

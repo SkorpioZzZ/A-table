@@ -1,4 +1,4 @@
-const CACHE_NAME = "a-table-v1";
+const CACHE_NAME = "a-table-v4";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -9,6 +9,7 @@ const APP_SHELL = [
   "./src/app.js",
   "./src/data/recipes.js",
   "./src/services/recipeService.js",
+  "./src/services/backupService.js",
   "./src/services/recipeStorageService.js",
   "./src/styles/main.css",
   "./src/styles/recipe-list.css",
@@ -39,6 +40,14 @@ self.addEventListener("fetch", (event) => {
   }
 
   event.respondWith(
-    caches.match(request).then((cached) => cached || fetch(request)),
+    fetch(request)
+      .then((response) => {
+        if (response.ok) {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+        }
+        return response;
+      })
+      .catch(() => caches.match(request)),
   );
 });
