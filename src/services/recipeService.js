@@ -3,7 +3,8 @@ export function getSuggestions(recipes, filters = {}) {
     const matchesMeal = !filters.meal || filters.meal === "all" || recipe.meal === filters.meal;
     const matchesTime = !filters.time || recipe.time <= Number(filters.time);
     const matchesType = !filters.type || filters.type === "all" || recipe.type === filters.type;
-    return matchesMeal && matchesTime && matchesType;
+    const matchesCourse = !filters.course || filters.course === "all" || (recipe.course ?? "plat") === filters.course;
+    return matchesMeal && matchesTime && matchesType && matchesCourse;
   });
 }
 
